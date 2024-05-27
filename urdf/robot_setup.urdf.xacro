@@ -3,31 +3,7 @@
 
     <xacro:include filename="$(find sayens)/urdf/materials.xacro"/>
 
-    <!-- Optic Table -->
-    <link name="optic_table">
-        <visual>
-            <geometry>
-                <box size="2 2 0.1"/>
-            </geometry>
-            <material name="grey"/>
-        </visual>
-        <collision>
-            <geometry>
-                <box size="2 2 0.1"/>
-            </geometry>
-        </collision>
-        <inertial>
-            <mass value="10.0"/>
-            <origin xyz="0 0 0.05"/>
-            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
-        </inertial>
-    </link>
 
-    <joint name="fixed_optic_table" type="fixed">
-        <parent link="world"/>
-        <child link="optic_table"/>
-        <origin xyz="0 0 0"/>
-    </joint>
 
     <!-- Kinova Jaco 7DoF Robotic Arm -->
     <xacro:include filename="$(find kinova_description)/urdf/j2n7s300_standalone.xacro"/>
@@ -35,22 +11,22 @@
     <link name="robot_root"/>
 
     <joint name="robot_base_joint" type="fixed">
-        <parent link="optic_table"/>
+        <parent link="world"/>
         <child link="robot_root"/>
-        <origin xyz="0 0 -0.1" rpy="0 0 0"/>
+        <origin xyz="0 0 0.01" rpy="0 0 0"/>
     </joint>
 
     <!-- Allied Vision Manta G504 Camera -->
     <link name="camera">
         <visual>
             <geometry>
-                <mesh filename="file:///home/aminedhemaied/catkin_ws/src/sayens/meshes/Manta_TypeB_C-Mount.stl" scale="0.001 0.001 0.001"/>
+                <mesh filename="file:///home/emin/catkin_ws/src/sayens/meshes/Manta_TypeB_C-Mount.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="black"/>
         </visual>
         <collision>
             <geometry>
-                <mesh filename="file:///home/aminedhemaied/catkin_ws/src/sayens/meshes/Manta_TypeB_C-Mount.stl" scale="0.001 0.001 0.001"/>
+                <mesh filename="file:///home/emin/catkin_ws/src/sayens/meshes/Manta_TypeB_C-Mount.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
         <inertial>
@@ -87,9 +63,9 @@
     </link>
 
     <joint name="rod_xy" type="fixed">
-        <parent link="optic_table"/>
+        <parent link="world"/>
         <child link="rod2"/>
-        <origin xyz="0.0 1 0.1" rpy="0 0 0"/>
+        <origin xyz="0.0 1 0.16" rpy="0 0 0"/>
     </joint>
 
     <!-- XY Platform -->
@@ -138,9 +114,9 @@
     </link>
 
     <joint name="rod_camera" type="fixed">
-        <parent link="optic_table"/>
+        <parent link="world"/>
         <child link="rod"/>
-        <origin xyz="0.0 0.2 0.1" rpy="0 0 0"/>
+        <origin xyz="0.0 0.2 0.16" rpy="0 0 0"/>
     </joint>
 
     <!-- Add damping to the joints to reduce vibrations -->
