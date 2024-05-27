@@ -1,7 +1,56 @@
 <launch>
+    <!-- Argument for the model -->
     <arg name="model" default="$(find sayens)/urdf/robot_setup.urdf.xacro"/>
-    <param name="robot_description" command="$(find xacro)/xacro $(arg model)"/>
+    <param name="use_sim_time" value="true"/>
+
+    <!-- State publishers -->
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find sayens)/rviz/robot_setup.rviz"/>
+
+    <!-- Kinova arm arguments -->
+    <arg name="kinova_robotType" default="j2n7s300"/>
+    <arg name="kinova_robotName" default="$(arg kinova_robotType)"/>
+    <arg name="paused" default="true"/>
+    <arg name="use_sim_time" default="true"/>
+    <arg name="gui" default="true"/>
+    <arg name="headless" default="true"/>
+    <arg name="debug" default="false"/>
+    <arg name="use_trajectory_controller" default="true"/>
+    <arg name="is7dof" default="true"/>
+    <arg name="rqt" default="false"/>
+    <arg name="has2finger" default="false"/>
+    <arg name="description_name" default="robot_description"/> <!-- allows remapping of robot_description into a namespace -->
+
+    <!-- Launch empty world in Gazebo -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find sayens)/worlds/robot_world.world"/>
+        <arg name="debug" value="$(arg debug)"/>
+        <arg name="gui" value="$(arg gui)"/>
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+        <arg name="headless" value="$(arg headless)"/>
+    </include>
+
+    <!-- Load the URDF into the ROS Parameter Server -->
+    <param name="robot_description" command="$(find xacro)/xacro --inorder '$(arg model)'"/>
+
+    <!-- Spawn the URDF robot model -->
+    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+          args="-urdf -model $(arg kinova_robotName) -param robot_description -x 0 -y 0 -z 0.1 -R 0 -P 0 -Y 0"/>
+
+    <!-- ros_control launch file -->
+    <include file="$(find kinova_control)/launch/kinova_control.launch">
+        <arg name="kinova_robotName" value="$(arg kinova_robotName)"/>
+        <arg name="kinova_robotType" value="$(arg kinova_robotType)"/>
+        <arg name="use_trajectory_controller" value="$(arg use_trajectory_controller)"/>
+        <arg name="is7dof" value="$(arg is7dof)"/>
+        <arg name="has2finger" value="$(arg has2finger)"/>
+        <arg name="description_name" value="$(arg description_name)"/>
+    </include>
+
+    <!-- rqt launch file -->
+    <include if="$(arg rqt)" file="$(find kinova_control)/launch/kinova_rqt.launch">
+        <arg name="kinova_robotType" value="$(arg kinova_robotType)"/>
+    </include> 
 </launch>
