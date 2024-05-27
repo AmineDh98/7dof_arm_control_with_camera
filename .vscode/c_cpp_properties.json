@@ -1,0 +1,36 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/aminedhemaied/cartographer_ws/install_isolated/include/**",
+        "/home/aminedhemaied/catkin_ws/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/aminedhemaied/catkin_ws/src/example_plugin_gazebo/include/**",
+        "/home/aminedhemaied/catkin_ws/src/frankenstein/frankenstein_description/include/**",
+        "/home/aminedhemaied/catkin_ws/src/frankenstein/frankenstein_gazebo/include/**",
+        "/home/aminedhemaied/catkin_ws/src/frankenstein/frankenstein_reality/include/**",
+        "/home/aminedhemaied/catkin_ws/src/frankenstein/frankenstein_simulation/include/**",
+        "/home/aminedhemaied/catkin_ws/src/frankenstein/gazebo_3wheel_plugin/include/**",
+        "/home/aminedhemaied/catkin_ws/src/gmcl/include/**",
+        "/home/aminedhemaied/catkin_ws/src/kinova-ros/kinova_moveit/inverse_kinematics_plugins/ikfast/j2n6s300_ikfast/include/**",
+        "/home/aminedhemaied/catkin_ws/src/kinova-ros/kinova_moveit/inverse_kinematics_plugins/ikfast/j2s6s300_ikfast/include/**",
+        "/home/aminedhemaied/catkin_ws/src/kinova-ros/kinova_moveit/inverse_kinematics_plugins/ikfast/j2s7s300_ikfast/include/**",
+        "/home/aminedhemaied/catkin_ws/src/kinova-ros/kinova_moveit/kinova_arm_moveit_demo/include/**",
+        "/home/aminedhemaied/catkin_ws/src/kinova-ros/kinova_driver/include/**",
+        "/home/aminedhemaied/catkin_ws/src/kinova-ros/kinova_moveit/inverse_kinematics_plugins/ikfast/m1n6s300_ikfast/include/**",
+        "/home/aminedhemaied/catkin_ws/src/sayens/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

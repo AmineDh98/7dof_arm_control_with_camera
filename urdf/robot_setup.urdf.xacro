@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<robot name="robot_setup" xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <xacro:include filename="$(find sayens)/urdf/materials.xacro"/>
+
+    <!-- Optic Table -->
+    <link name="optic_table">
+        <visual>
+            <geometry>
+                <box size="2 2 0.1"/>
+            </geometry>
+            <material name="grey"/>
+        </visual>
+    </link>
+
+    <joint name="fixed_optic_table" type="fixed">
+        <parent link="world"/>
+        <child link="optic_table"/>
+    </joint>
+
+    <!-- Kinova Jaco 7DoF Robotic Arm -->
+    <xacro:include filename="$(find kinova_description)/urdf/j2s7s300_standalone.xacro"/>
+
+    <link name="robot_root"/>
+
+    <joint name="robot_base_joint" type="fixed">
+        <parent link="optic_table"/>
+        <child link="robot_root"/>
+        <origin xyz="0 0 0.1" rpy="0 0 0"/>
+    </joint>
+
+    <!-- Allied Vision Manta G504 Camera -->
+    <link name="camera">
+        <visual>
+            <geometry>
+                <mesh filename="file:///home/aminedhemaied/catkin_ws/src/sayens/meshes/Manta_TypeB_C-Mount.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
+        <collision>
+            <geometry>
+                <mesh filename="file:///home/aminedhemaied/catkin_ws/src/sayens/meshes/Manta_TypeB_C-Mount.stl" scale="0.01 0.01 0.01"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="fixed_camera" type="fixed">
+        <parent link="rod"/>
+        <child link="camera"/>
+        <origin xyz="0.0 0.05 0.27" rpy="0 0 0"/>
+    </joint>
+
+    <!-- XY Platform -->
+    <link name="xy_platform">
+        <visual>
+            <geometry>
+                <box size="0.5 0.5 0.05"/>
+            </geometry>
+            <material name="blue"/>
+        </visual>
+    </link>
+
+    <joint name="fixed_xy_platform" type="fixed">
+        <parent link="optic_table"/>
+        <child link="xy_platform"/>
+        <origin xyz="-0.0 1 0.5" rpy="1.57 0 0"/>
+    </joint>
+
+    <link name="rod">
+        <visual>
+            <geometry>
+                <box size="0.05 0.05 0.5"/>
+            </geometry>
+            <material name="red"/>
+        </visual>
+    </link>
+
+    <joint name="rod_camera" type="fixed">
+        <parent link="optic_table"/>
+        <child link="rod"/>
+        <origin xyz="-0.5 0 0.25" rpy="0 0 0"/>
+    </joint>
+</robot>
