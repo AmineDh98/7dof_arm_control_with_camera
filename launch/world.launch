@@ -122,7 +122,11 @@
 
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find sayens)/rviz/robot_setup.rviz"/>
 
-  <node name="service_launcher" pkg="sayens" type="service.sh" output="screen" />
+  <!-- <node name="service_launcher" pkg="sayens" type="service.sh" output="screen" /> -->
+
+  <node name="service_tf_launcher" pkg="sayens" type="service_tf.sh" output="screen" />
+
+
   <node name="initial_launcher" pkg="sayens" type="initial.sh" output="screen" />
 
 </launch>
