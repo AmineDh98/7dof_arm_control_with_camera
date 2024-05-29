@@ -78,10 +78,15 @@ class RobotController:
         self.pose_received = True  # Set the flag indicating the pose has been received
         rospy.loginfo("Received target pose: %s", self.sigma_d)
 
+    def distance(self, a, b):
+        return np.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2)
     def joint_states_callback(self, msg):
         if not self.pose_received or self.goal_reached:
             return  # If the goal is reached or pose not received, do nothing
-
+        if (self.distance(self.sigma_d,[0,0,0])>984 or self.sigma_d[2]>0):
+            rospy.loginfo("Position is not reachable")
+            rospy.signal_shutdown("Position is not reachable")
+            return
         # Extract current joint positions
         current_joint_positions = np.array(msg.position[0:7], dtype=float)
         self.abc = msg.position[0:7]
@@ -92,6 +97,26 @@ class RobotController:
         J1 = J[0:3, :]
         T = np.array(T)
         sigma = np.array([T[-1][0][-1], T[-1][1][-1], T[-1][2][-1]])
+        
+
+        # Check if any of the joints collide with the table
+        sigma_list = [
+            np.array([T[-1][0][-1], T[-1][1][-1], T[-1][2][-1]]),
+            np.array([T[1][0][-1], T[1][1][-1], T[1][2][-1]]),
+            np.array([T[2][0][-1], T[2][1][-1], T[2][2][-1]]),
+            np.array([T[3][0][-1], T[3][1][-1], T[3][2][-1]]),
+            np.array([T[4][0][-1], T[4][1][-1], T[4][2][-1]]),
+            np.array([T[5][0][-1], T[5][1][-1], T[5][2][-1]]),
+            np.array([T[6][0][-1], T[6][1][-1], T[6][2][-1]])
+        ]
+
+        
+        if any(sigma[2] > 0 for sigma in sigma_list):
+            rospy.loginfo("Robot collided")
+            rospy.signal_shutdown("Robot collided, killing node...")
+            return
+
+
         err = (self.sigma_d - sigma).reshape((3, 1))
         dq1 = np.linalg.pinv(J1) @ (self.K @ err)
         dq2 = dq1[:, 0]

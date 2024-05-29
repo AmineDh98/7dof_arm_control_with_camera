@@ -16,24 +16,24 @@
 
   <!-- Robot to table transformation parameters -->
   <arg name="robot_to_table_x" default="0.6"/>
-  <arg name="robot_to_table_y" default="0.6"/>
-  <arg name="robot_to_table_z" default="0.405"/>
-  <arg name="robot_to_table_roll" default="0"/>
-  <arg name="robot_to_table_pitch" default="0"/>
-  <arg name="robot_to_table_yaw" default="0"/>
+  <arg name="robot_to_table_y" default="0.0"/>
+  <arg name="robot_to_table_z" default="0.401"/> <!-- should be fixed -->
+  <arg name="robot_to_table_roll" default="0"/> <!-- should be fixed -->
+  <arg name="robot_to_table_pitch" default="0"/> <!-- should be fixed -->
+  <arg name="robot_to_table_yaw" default="0"/> <!-- should be fixed -->
 
   <!-- Camera to table transformation parameters -->
-  <arg name="camera_to_table_x" default="-0.6"/>
+  <arg name="camera_to_table_x" default="0.6"/>
   <arg name="camera_to_table_y" default="0.6"/>
-  <arg name="camera_to_table_z" default="0.8"/>
+  <arg name="camera_to_table_z" default="0.8"/> <!-- should be >0.4 -->
   <arg name="camera_to_table_roll" default="0"/>
   <arg name="camera_to_table_pitch" default="0"/>
-  <arg name="camera_to_table_yaw" default="0.7"/>
+  <arg name="camera_to_table_yaw" default="0.0"/>
 
 <!-- Target to table transformation parameters -->
-  <arg name="target_to_camera_x" default="0.6"/>
-  <arg name="target_to_camera_y" default="-0.6"/>
-  <arg name="target_to_camera_z" default="0.0"/>
+  <arg name="target_to_camera_x" default="0.0"/> <!-- should not be high -->
+  <arg name="target_to_camera_y" default="0.6"/> <!-- should be positive -->
+  <arg name="target_to_camera_z" default="0.0"/> 
   <arg name="target_to_camera_roll" default="0"/>
   <arg name="target_to_camera_pitch" default="0"/>
   <arg name="target_to_camera_yaw" default="0"/>

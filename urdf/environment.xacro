@@ -14,14 +14,14 @@
         <visual>
             <geometry>
                 <box size="0.05 0.05 0.05"/>
-                 <!-- <mesh filename="file:///home/emin/catkin_ws/src/sayens/meshes/Manta_TypeB_C-Mount.stl" scale="0.001 0.001 0.001"/> -->
+                 <!-- <mesh filename="file:///home/aminedhemaied/catkin_ws/src/sayens/meshes/Manta_TypeB_C-Mount.stl" scale="0.001 0.001 0.001"/> -->
             </geometry>
-            <material name="black"/>
+            <material name="red"/>
         </visual>
         <collision>
             <geometry>
                 <box size="0.05 0.05 0.05"/>
-                 <!-- <mesh filename="file:///home/emin/catkin_ws/src/sayens/meshes/Manta_TypeB_C-Mount.stl" scale="0.001 0.001 0.001"/> -->
+                 <!-- <mesh filename="file:///home/aminedhemaied/catkin_ws/src/sayens/meshes/Manta_TypeB_C-Mount.stl" scale="0.001 0.001 0.001"/> -->
             </geometry>
         </collision>
         <inertial>
