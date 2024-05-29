@@ -17,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   urdf
   xacro
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -66,6 +67,10 @@ find_package(catkin REQUIRED COMPONENTS
 #   Service2.srv
 # )
 
+add_service_files(
+  FILES
+  TargetPose.srv
+)
 ## Generate actions in the 'action' folder
 # add_action_files(
 #   FILES
@@ -78,7 +83,11 @@ find_package(catkin REQUIRED COMPONENTS
 #   DEPENDENCIES
 #   geometry_msgs#   std_msgs
 # )
-
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+  geometry_msgs
+)
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
 ################################################
@@ -108,13 +117,15 @@ find_package(catkin REQUIRED COMPONENTS
 ## LIBRARIES: libraries you create in this project that dependent projects also need
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
-catkin_package(
+# catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES sayens
 #  CATKIN_DEPENDS gazebo geometry_msgs roscpp rospy rviz std_msgs tf urdf xacro
 #  DEPENDS system_lib
+# )
+catkin_package(
+  CATKIN_DEPENDS message_runtime roscpp rospy std_msgs geometry_msgs
 )
-
 ###########
 ## Build ##
 ###########
@@ -125,6 +136,9 @@ include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
 )
+
+
+
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}

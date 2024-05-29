@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<robot name="environment" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    
+    <xacro:include filename="$(find sayens)/urdf/materials.xacro"/>
+    <xacro:include filename="$(find sayens)/urdf/table.xacro"/>
+
+
+    <!-- Adjusted positions to place components on the table -->
+    
+
+    <!-- Allied Vision Manta G504 Camera -->
+    <link name="camera">
+        <visual>
+            <geometry>
+                <box size="0.05 0.05 0.05"/>
+                 <!-- <mesh filename="file:///home/emin/catkin_ws/src/sayens/meshes/Manta_TypeB_C-Mount.stl" scale="0.001 0.001 0.001"/> -->
+            </geometry>
+            <material name="black"/>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.05 0.05 0.05"/>
+                 <!-- <mesh filename="file:///home/emin/catkin_ws/src/sayens/meshes/Manta_TypeB_C-Mount.stl" scale="0.001 0.001 0.001"/> -->
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0.1"/>
+            <origin xyz="0 0 0.05"/>
+            <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+        </inertial>
+    </link>
+
+    <joint name="camera_tr" type="fixed">
+        <parent link="table"/>
+        <child link="camera"/>
+        <origin xyz="$(arg camera_to_table_x) $(arg camera_to_table_y) $(arg camera_to_table_z)" rpy="$(arg camera_to_table_roll) $(arg camera_to_table_pitch) $(arg camera_to_table_yaw)"/>
+    </joint>
+
+
+
+
+
+ <!-- XY Platform -->
+    <link name="xy_platform">
+        <visual>
+            <geometry>
+                <sphere radius="0.025"/> <!-- Set the radius for the visual representation -->
+            </geometry>
+            <material name="blue"/>
+        </visual>
+        <collision>
+            <geometry>
+                <sphere radius="0.01"/> <!-- Set the radius for the collision model -->
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="5.0"/>
+            <origin xyz="0 0 0.025"/>
+            <!-- Updated inertia for a sphere, use appropriate values -->
+            <inertia ixx="0.05" ixy="0.0" ixz="0.0" iyy="0.05" iyz="0.0" izz="0.05"/>
+        </inertial>
+    </link>
+
+
+    <joint name="target_tr" type="fixed">
+        <parent link="camera"/>
+        <child link="xy_platform"/>
+        <origin xyz="$(arg target_to_camera_x) $(arg target_to_camera_y) $(arg target_to_camera_z)" rpy="$(arg target_to_camera_roll) $(arg target_to_camera_pitch) $(arg target_to_camera_yaw)"/>
+    </joint>
+
+</robot>

@@ -1,129 +1,52 @@
 <?xml version="1.0"?>
-<robot name="robot_setup" xmlns:xacro="http://ros.org/wiki/xacro">
+<robot name="robot_setup" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-    <xacro:include filename="$(find sayens)/urdf/materials.xacro"/>
+<!-- Define the arguments with defaults -->
+    <xacro:arg name="robot_to_table_x" default="0"/>
+    <xacro:arg name="robot_to_table_y" default="0"/>
+    <xacro:arg name="robot_to_table_z" default="0.41"/>
+    <xacro:arg name="robot_to_table_roll" default="0"/>
+    <xacro:arg name="robot_to_table_pitch" default="0"/>
+    <xacro:arg name="robot_to_table_yaw" default="0"/>
+    
+    <xacro:arg name="camera_to_table_x" default="-0.6"/>
+    <xacro:arg name="camera_to_table_y" default="-0.6"/>
+    <xacro:arg name="camera_to_table_z" default="0.375"/>
+    <xacro:arg name="camera_to_table_roll" default="0"/>
+    <xacro:arg name="camera_to_table_pitch" default="0"/>
+    <xacro:arg name="camera_to_table_yaw" default="0"/>
 
+    <xacro:arg name="target_to_camera_x" default="0.0"/>
+    <xacro:arg name="target_to_camera_y" default="0.4"/>
+    <xacro:arg name="target_to_camera_z" default="0.55"/>
+    <xacro:arg name="target_to_camera_roll" default="0"/>
+    <xacro:arg name="target_to_camera_pitch" default="0"/>
+    <xacro:arg name="target_to_camera_yaw" default="0"/>
 
+    <xacro:property name="robot_x" value="$(arg robot_to_table_x)"/>
+    <xacro:property name="robot_y" value="$(arg robot_to_table_y)"/>
+    <xacro:property name="robot_z" value="$(arg robot_to_table_z)"/>
+    <xacro:property name="robot_roll" value="$(arg robot_to_table_roll)"/>
+    <xacro:property name="robot_pitch" value="$(arg robot_to_table_pitch)"/>
+    <xacro:property name="robot_yaw" value="$(arg robot_to_table_yaw)"/>
+    
+    <xacro:property name="camera_x" value="$(arg camera_to_table_x)"/>
+    <xacro:property name="camera_y" value="$(arg camera_to_table_y)"/>
+    <xacro:property name="camera_z" value="$(arg camera_to_table_z)"/>
+    <xacro:property name="camera_roll" value="$(arg camera_to_table_roll)"/>
+    <xacro:property name="camera_pitch" value="$(arg camera_to_table_pitch)"/>
+    <xacro:property name="camera_yaw" value="$(arg camera_to_table_yaw)"/>
 
-    <!-- Kinova Jaco 7DoF Robotic Arm -->
-    <xacro:include filename="$(find kinova_description)/urdf/j2n7s300_standalone.xacro"/>
+    <xacro:property name="target_x" value="$(arg target_to_camera_x)"/>
+    <xacro:property name="target_y" value="$(arg target_to_camera_y)"/>
+    <xacro:property name="target_z" value="$(arg target_to_camera_z)"/>
+    <xacro:property name="target_roll" value="$(arg target_to_camera_roll)"/>
+    <xacro:property name="target_pitch" value="$(arg target_to_camera_pitch)"/>
+    <xacro:property name="target_yaw" value="$(arg target_to_camera_yaw)"/>
 
-    <link name="robot_root"/>
+    <!-- Include the xacro files and pass the arguments -->
+    <xacro:include filename="$(find sayens)/urdf/j2s7s300_standalone.xacro"/>
+    <xacro:include filename="$(find sayens)/urdf/environment.xacro"/>
 
-    <joint name="robot_base_joint" type="fixed">
-        <parent link="world"/>
-        <child link="robot_root"/>
-        <origin xyz="0 0 0.01" rpy="0 0 0"/>
-    </joint>
-
-    <!-- Allied Vision Manta G504 Camera -->
-    <link name="camera">
-        <visual>
-            <geometry>
-                <mesh filename="file:///home/aminedhemaied/catkin_ws/src/sayens/meshes/Manta_TypeB_C-Mount.stl" scale="0.001 0.001 0.001"/>
-            </geometry>
-            <material name="black"/>
-        </visual>
-        <collision>
-            <geometry>
-                <mesh filename="file:///home/aminedhemaied/catkin_ws/src/sayens/meshes/Manta_TypeB_C-Mount.stl" scale="0.001 0.001 0.001"/>
-            </geometry>
-        </collision>
-        <inertial>
-            <mass value="0.1"/>
-            <origin xyz="0 0 0.05"/>
-            <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
-        </inertial>
-    </link>
-
-    <joint name="fixed_camera" type="fixed">
-        <parent link="rod"/>
-        <child link="camera"/>
-        <origin xyz="0.0 0.05 0.17" rpy="0 0 0"/>
-    </joint>
-
-
-    <link name="rod2">
-        <visual>
-            <geometry>
-                <box size="0.05 0.05 0.3"/>
-            </geometry>
-            <material name="red"/>
-        </visual>
-        <collision>
-            <geometry>
-                <box size="0.05 0.05 0.3"/>
-            </geometry>
-        </collision>
-        <inertial>
-            <mass value="0.5"/>
-            <origin xyz="0 0 0.15"/>
-            <inertia ixx="0.005" ixy="0.0" ixz="0.0" iyy="0.005" iyz="0.0" izz="0.005"/>
-        </inertial>
-    </link>
-
-    <joint name="rod_xy" type="fixed">
-        <parent link="world"/>
-        <child link="rod2"/>
-        <origin xyz="0.0 1 0.16" rpy="0 0 0"/>
-    </joint>
-
-    <!-- XY Platform -->
-    <link name="xy_platform">
-        <visual>
-            <geometry>
-                <box size="0.5 0.5 0.05"/>
-            </geometry>
-            <material name="blue"/>
-        </visual>
-        <collision>
-            <geometry>
-                <box size="0.5 0.5 0.05"/>
-            </geometry>
-        </collision>
-        <inertial>
-            <mass value="5.0"/>
-            <origin xyz="0 0 0.025"/>
-            <inertia ixx="0.05" ixy="0.0" ixz="0.0" iyy="0.05" iyz="0.0" izz="0.05"/>
-        </inertial>
-    </link>
-
-    <joint name="fixed_xy_platform" type="fixed">
-        <parent link="rod2"/>
-        <child link="xy_platform"/>
-        <origin xyz="0 0 0.4" rpy="0 1.57 1.57"/>
-    </joint>
-
-    <link name="rod">
-        <visual>
-            <geometry>
-                <box size="0.05 0.05 0.3"/>
-            </geometry>
-            <material name="red"/>
-        </visual>
-        <collision>
-            <geometry>
-                <box size="0.05 0.05 0.3"/>
-            </geometry>
-        </collision>
-        <inertial>
-            <mass value="0.5"/>
-            <origin xyz="0 0 0.15"/>
-            <inertia ixx="0.005" ixy="0.0" ixz="0.0" iyy="0.005" iyz="0.0" izz="0.005"/>
-        </inertial>
-    </link>
-
-    <joint name="rod_camera" type="fixed">
-        <parent link="world"/>
-        <child link="rod"/>
-        <origin xyz="0.0 0.2 0.16" rpy="0 0 0"/>
-    </joint>
-
-    <!-- Add damping to the joints to reduce vibrations -->
-    <gazebo>
-        <plugin name="joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so"/>
-        <plugin name="robot_state_publisher" filename="libgazebo_ros_robot_state_publisher.so"/>
-        <plugin name="ros_control" filename="libgazebo_ros_control.so"/>
-    </gazebo>
 
 </robot>

@@ -1,12 +1,12 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
+
 import rospy
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Float64
-from geometry_msgs.msg import Point, PoseStamped
+from geometry_msgs.msg import Point
 import numpy as np
 from kin import *  # Functions define kinematics and jacobians
 import math
-from sayens.srv import TargetPose, TargetPoseRequest
 
 class RobotController:
     def __init__(self):
@@ -21,15 +21,19 @@ class RobotController:
         self.revolute = [True, True, True, True, True, True, True]
         self.dt = 0.1
 
+        # Desired end-effector position
+        self.sigma_d = np.array([0, 0, 1220])
+        self.sigma_d = np.array([-self.sigma_d[0], self.sigma_d[1], -self.sigma_d[2]])
+        self.goal_pose = Point()
+        self.goal_pose.x = self.sigma_d[0]
+        self.goal_pose.y = self.sigma_d[1]
+        self.goal_pose.z = self.sigma_d[2]
+        print(self.sigma_d)
+
         # Control gains
         self.K = np.diag([3, 3, 3])
         self.abc = [0, 0, 0, 0, 0, 0, 0]
         self.goal_reached = False  # Flag to indicate when the goal is reached
-        self.pose_received = False  # Flag to indicate when the pose is received
-
-        # Desired end-effector position (initially not set)
-        self.sigma_d = None
-        self.goal_pose = Point()
 
         # Define publishers for each joint
         self.pub_joint1 = rospy.Publisher('/j2s7s300/joint_1_position_controller/command', Float64, queue_size=10)
@@ -45,42 +49,12 @@ class RobotController:
         # Subscribe to the joint states topic
         rospy.Subscriber('/j2s7s300/joint_states', JointState, self.joint_states_callback)
 
-        try:
-            # Wait for the service to become available
-            rospy.loginfo("Waiting for target_pose_service...")
-            rospy.wait_for_service('target_pose_service')
-            rospy.loginfo("target_pose_service available.")
-            # Create a service proxy
-            self.target_pose_service = rospy.ServiceProxy('target_pose_service', TargetPose)
-            self.get_target_pose()
-        except rospy.ServiceException as e:
-            rospy.logerr("Service call failed: %s" % e)
-            rospy.signal_shutdown("Service call failed")
-        except rospy.ROSInterruptException:
-            rospy.loginfo("Node shutdown before completing initialization.")
-            return
-
         # Spin to keep the node alive
         rospy.spin()
 
-    def get_target_pose(self):
-        # Call the service to get the target pose
-        rospy.loginfo("Calling target_pose_service...")
-        request = TargetPoseRequest()
-        response = self.target_pose_service(request)
-        target_pose = response.target_pose.pose
-
-        # Update the desired end-effector position
-        self.sigma_d = np.array([target_pose.position.x, target_pose.position.y, target_pose.position.z])
-        self.goal_pose.x = self.sigma_d[0]
-        self.goal_pose.y = self.sigma_d[1]
-        self.goal_pose.z = self.sigma_d[2]
-        self.pose_received = True  # Set the flag indicating the pose has been received
-        rospy.loginfo("Received target pose: %s", self.sigma_d)
-
     def joint_states_callback(self, msg):
-        if not self.pose_received or self.goal_reached:
-            return  # If the goal is reached or pose not received, do nothing
+        if self.goal_reached:
+            return  # If the goal is reached, do nothing
 
         # Extract current joint positions
         current_joint_positions = np.array(msg.position[0:7], dtype=float)
@@ -108,9 +82,9 @@ class RobotController:
 
         # Publish goal position
         self.pub_goal_pose.publish(self.goal_pose)
-        rospy.loginfo("current position = %s", sigma)
-        if np.linalg.norm(err) < 30:
-            rospy.loginfo("Position reached")
+        print("current position = ", sigma)
+        if np.linalg.norm(err) < 10:
+            print("Position reached")
             self.goal_reached = True
             rospy.signal_shutdown("Position reached")
 

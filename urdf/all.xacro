@@ -1,0 +1,182 @@
+<?xml version="1.0"?>
+<robot name="robot_setup" xmlns:xacro="http://www.ros.org/wiki/xacro"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xmlns:gazebo="http://playerstage.sourceforge.net/gazebo/xmlschema/#gz"
+  xmlns:model="http://playerstage.sourceforge.net/gazebo/xmlschema/#model"
+  xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+  xmlns:body="http://playerstage.sourceforge.net/gazebo/xmlschema/#body"
+  xmlns:geom="http://playerstage.sourceforge.net/gazebo/xmlschema/#geom"
+  xmlns:joint="http://playerstage.sourceforge.net/gazebo/xmlschema/#joint"
+  xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+  xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+  xmlns:rendering="http://playerstage.sourceforge.net/gazebo/xmlschema/#rendering"
+  xmlns:renderable="http://playerstage.sourceforge.net/gazebo/xmlschema/#renderable"
+  xmlns:physics="http://playerstage.sourceforge.net/gazebo/xmlschema/#physics">
+
+    <!-- Define the arguments with defaults -->
+    <xacro:arg name="robot_to_table_x" default="0"/>
+    <xacro:arg name="robot_to_table_y" default="0"/>
+    <xacro:arg name="robot_to_table_z" default="0.41"/>
+    <xacro:arg name="robot_to_table_roll" default="0"/>
+    <xacro:arg name="robot_to_table_pitch" default="0"/>
+    <xacro:arg name="robot_to_table_yaw" default="0"/>
+    
+    <xacro:arg name="camera_to_table_x" default="-0.6"/>
+    <xacro:arg name="camera_to_table_y" default="-0.6"/>
+    <xacro:arg name="camera_to_table_z" default="0.375"/>
+    <xacro:arg name="camera_to_table_roll" default="0"/>
+    <xacro:arg name="camera_to_table_pitch" default="0"/>
+    <xacro:arg name="camera_to_table_yaw" default="0"/>
+
+    <xacro:arg name="target_to_table_x" default="-0.6"/>
+    <xacro:arg name="target_to_table_y" default="-0.6"/>
+    <xacro:arg name="target_to_table_z" default="0.375"/>
+    <xacro:arg name="target_to_table_roll" default="0"/>
+    <xacro:arg name="target_to_table_pitch" default="0"/>
+    <xacro:arg name="target_to_table_yaw" default="0"/>
+
+    <xacro:property name="robot_x" value="$(arg robot_to_table_x)"/>
+    <xacro:property name="robot_y" value="$(arg robot_to_table_y)"/>
+    <xacro:property name="robot_z" value="$(arg robot_to_table_z)"/>
+    <xacro:property name="robot_roll" value="$(arg robot_to_table_roll)"/>
+    <xacro:property name="robot_pitch" value="$(arg robot_to_table_pitch)"/>
+    <xacro:property name="robot_yaw" value="$(arg robot_to_table_yaw)"/>
+    
+    <xacro:property name="camera_x" value="$(arg camera_to_table_x)"/>
+    <xacro:property name="camera_y" value="$(arg camera_to_table_y)"/>
+    <xacro:property name="camera_z" value="$(arg camera_to_table_z)"/>
+    <xacro:property name="camera_roll" value="$(arg camera_to_table_roll)"/>
+    <xacro:property name="camera_pitch" value="$(arg camera_to_table_pitch)"/>
+    <xacro:property name="camera_yaw" value="$(arg camera_to_table_yaw)"/>
+
+    <xacro:property name="target_x" value="$(arg target_to_table_x)"/>
+    <xacro:property name="target_y" value="$(arg target_to_table_y)"/>
+    <xacro:property name="target_z" value="$(arg target_to_table_z)"/>
+    <xacro:property name="target_roll" value="$(arg target_to_table_roll)"/>
+    <xacro:property name="target_pitch" value="$(arg target_to_table_pitch)"/>
+    <xacro:property name="target_yaw" value="$(arg target_to_table_yaw)"/>
+
+
+
+    <!-- Include the kinova robot description -->
+    <xacro:include filename="$(find kinova_description)/urdf/j2s7s300.xacro"/>
+
+    <!-- Robot setup -->
+    <link name="root"/>
+
+    <joint name="connect_root_and_world" type="fixed">
+        <child link="root" />
+        <parent link="table" />
+        <origin xyz="$(arg robot_to_table_x) $(arg robot_to_table_y) $(arg robot_to_table_z)" rpy="$(arg robot_to_table_roll) $(arg robot_to_table_pitch) $(arg robot_to_table_yaw)"/>   
+    </joint> 
+
+    <xacro:property name="robot_root" value="root" />
+    <xacro:j2s7s300 base_parent="${robot_root}"/>
+
+    <!-- Environment setup -->
+    <xacro:include filename="$(find sayens)/urdf/materials.xacro"/>
+    <xacro:include filename="$(find sayens)/urdf/table.xacro"/>
+
+    <link name="camera_support">
+        <visual>
+            <geometry>
+                <box size="0.05 0.05 0.3"/>
+            </geometry>
+            <material name="red"/>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.05 0.05 0.3"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0.5"/>
+            <origin xyz="0 0 0.15"/>
+            <inertia ixx="0.005" ixy="0.0" ixz="0.0" iyy="0.005" iyz="0.0" izz="0.005"/>
+        </inertial>
+    </link>
+
+    <joint name="support_table" type="fixed">
+        <parent link="table"/>
+        <child link="camera_support"/>
+        <origin xyz="$(arg camera_to_table_x) $(arg camera_to_table_y) $(arg camera_to_table_z)" rpy="$(arg camera_to_table_roll) $(arg camera_to_table_pitch) $(arg camera_to_table_yaw)"/>
+    </joint>
+
+    <!-- Allied Vision Manta G504 Camera -->
+    <link name="camera">
+        <visual>
+            <geometry>
+                <box size="0.05 0.05 0.05"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.05 0.05 0.05"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0.1"/>
+            <origin xyz="0 0 0.05"/>
+            <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+        </inertial>
+    </link>
+
+    <joint name="fixed_camera" type="fixed">
+        <parent link="camera_support"/>
+        <child link="camera"/>
+        <origin xyz="0.0 0.05 0.17" rpy="0 0 0"/>
+    </joint>
+
+    <link name="rod">
+        <visual>
+            <geometry>
+                <box size="0.05 0.05 0.3"/>
+            </geometry>
+            <material name="red"/>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.05 0.05 0.3"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0.5"/>
+            <origin xyz="0 0 0.15"/>
+            <inertia ixx="0.005" ixy="0.0" ixz="0.0" iyy="0.005" iyz="0.0" izz="0.005"/>
+        </inertial>
+    </link>
+
+    <joint name="rod_table" type="fixed">
+        <parent link="table"/>
+        <child link="rod"/>
+        <origin xyz="0.0 0.4 0.55" rpy="0 0 0"/>
+    </joint>
+
+    <!-- XY Platform -->
+    <link name="xy_platform">
+        <visual>
+            <geometry>
+                <box size="0.5 0.5 0.05"/>
+            </geometry>
+            <material name="blue"/>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.5 0.5 0.05"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="5.0"/>
+            <origin xyz="0 0 0.025"/>
+            <inertia ixx="0.05" ixy="0.0" ixz="0.0" iyy="0.05" iyz="0.0" izz="0.05"/>
+        </inertial>
+    </link>
+
+    <joint name="fixed_xy_platform" type="fixed">
+        <parent link="rod"/>
+        <child link="xy_platform"/>
+        <origin xyz="0 0 0.4" rpy="0 1.57 1.57"/>
+    </joint>
+
+</robot>

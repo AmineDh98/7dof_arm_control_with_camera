@@ -1,0 +1,11 @@
+
+
+
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:arg name="x_arg" default="10"/>
+    <xacro:property name="x_property" value="$(arg x_arg)" />
+    <link name="test">
+        <origin xyz="${arg x_arg} 0 0"/>
+  </link>
+</robot>
