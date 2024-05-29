@@ -1,5 +1,5 @@
 # sayens
-Optic table environment description with a 7dof robotic arm and a camera
+Optic table environment description with a Kinova Jaco 7DoF robotic arm and a camera
 The objects in the environments have variable positions and can be entered when launching the project.
 
 
