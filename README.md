@@ -2,6 +2,13 @@
 Optic table environment description with a Kinova Jaco 7DoF robotic arm and a camera
 The objects in the environments have variable positions and can be entered when launching the project.
 
+# Table of Contents
+- [sayens](#sayens)
+- [Created by](#created-by)
+- [Installation](#installation)
+- [Running](#running)
+- [Scope](#scope)
+- [Results](#results)
 
 ## Created by:
 
